@@ -1,7 +1,7 @@
 # to-dolist
 
 ## Overview
-Welcome to the To-Do List project! This application allows users to create, manage, and organize their tasks efficiently. Whether you're planning your daily schedule, organizing a project, or just keeping track of important tasks, this to-do list is designed to help you stay on top of everything.
+Welcome to the to-doList project! This application allows users to create, manage, and organize their tasks efficiently. Whether you're planning your daily schedule, organizing a project, or just keeping track of important tasks, this to-do list is designed to help you stay on top of everything.
 
 ## Features
 - **Add Tasks**: Easily add new tasks with a simple and intuitive interface.
