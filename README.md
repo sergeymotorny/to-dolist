@@ -1,4 +1,7 @@
-# to-dolist
+![1200x600wa](https://github.com/sergeymotorny/to-dolist/assets/98454212/9f5697f5-a8cb-4a4c-a1f1-cc0ca20dad56)
+
+
+## to-dolist
 
 ## Overview
 Welcome to the to-doList project! This application allows users to create, manage, and organize their tasks efficiently. Whether you're planning your daily schedule, organizing a project, or just keeping track of important tasks, this to-do list is designed to help you stay on top of everything.
@@ -66,6 +69,10 @@ We welcome contributions to improve the to-doList application. To contribute:
 4. **Push to your branch:**
    ```bash
    git push origin your-feature-branch
+
+## Acknowledgements
+- Thanks to all the contributors who have helped improve this project.
+- Special thanks to the open-source community for providing valuable resources and inspiration.
 
 ## Contact
 If you have any questions, suggestions, or issues, please feel free to contact us at `motorny0919@gmail.com`
