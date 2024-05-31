@@ -1,4 +1,7 @@
 package com.motorny.todolist.repositories;
 
-public interface TodoRepository {
+import com.motorny.todolist.model.Todo;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TodoRepository extends JpaRepository<Todo, Long> {
 }
