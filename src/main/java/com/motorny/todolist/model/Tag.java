@@ -7,13 +7,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
 @Table(name = "tag")
 public class Tag {
 
@@ -24,40 +23,29 @@ public class Tag {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "tagList")
-    private Set<Todo> todoList = new HashSet<>();
+    @ManyToMany(mappedBy = "tags")
+    private Set<Todo> todos = new HashSet<>();
 
     public void addTodo(Todo todo) {
-        addTodo(todo, false);
-    }
-
-    public void addTodo(Todo todo, boolean otherSideHasBenSet) {
-        this.getTodoList().add(todo);
-        if (otherSideHasBenSet) {
-            return;
-        }
-        todo.addTag(this, true);
+        this.todos.add(todo);
+        todo.addTag(this);
     }
 
     public void removeTodo(Todo todo) {
-        removeTodo(todo, false);
+        this.todos.remove(todo);
+        todo.setTags(null);
     }
 
-    public void removeTodo(Todo todo, boolean otherSideHasBenSet) {
-        this.getTodoList().remove(todo);
-        if (otherSideHasBenSet) {
-            return;
-        }
-        todo.removeTag(this, true);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id) && Objects.equals(name, tag.name);
     }
 
-//    public void addTodo(Todo todo) {
-//        this.todoList.add(todo);
-//        todo.addTag(this, true);
-//    }
-//
-//    public void removeTodo(Todo todo) {
-//        this.todoList.remove(todo);
-//        todo.removeTag(this, true);
-//    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

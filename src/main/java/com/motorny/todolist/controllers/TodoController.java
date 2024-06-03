@@ -16,28 +16,28 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/todos")
-    public ResponseEntity<List<TodoDto>> getAllTodo() {
-        return new ResponseEntity<>(todoService.getAllTodo(), HttpStatus.OK);
+    @GetMapping("/user/{userId}/todos")
+    public ResponseEntity<List<TodoDto>> getAllTodo(@PathVariable("userId") Long userId) {
+        return new ResponseEntity<>(todoService.getAllTodo(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/todo/{id}")
-    public ResponseEntity<TodoDto> getTodo(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(todoService.getTodo(id), HttpStatus.OK);
+    @GetMapping("/user/todo/{todoId}")
+    public ResponseEntity<TodoDto> getTodo(@PathVariable("todoId") Long todoId) {
+        return new ResponseEntity<>(todoService.getTodo(todoId), HttpStatus.OK);
     }
 
-    @PostMapping("/todo")
-    public ResponseEntity<TodoDto> createTodo(@RequestBody TodoDto todoDto) {
-        return new ResponseEntity<>(todoService.createTodo(todoDto), HttpStatus.CREATED);
+    @PostMapping("/user/{userId}/todo")
+    public ResponseEntity<TodoDto> createTodo(@RequestBody TodoDto todoDto, @PathVariable("userId") Long userId) {
+        return new ResponseEntity<>(todoService.createTodo(todoDto, userId), HttpStatus.CREATED);
     }
 
-    @PutMapping("/todo/{id}")
-    public ResponseEntity<TodoDto> updateTodo(@RequestBody TodoDto todoDto, @PathVariable("id") Long id) {
-        return new ResponseEntity<>(todoService.updateTodo(todoDto, id), HttpStatus.OK);
+    @PutMapping("/user/todo/{todoId}")
+    public ResponseEntity<TodoDto> updateTodo(@RequestBody TodoDto todoDto, @PathVariable("todoId") Long todoId) {
+        return new ResponseEntity<>(todoService.updateTodo(todoDto, todoId), HttpStatus.OK);
     }
 
-    @DeleteMapping("/todo/{id}")
-    public ResponseEntity<String> deleteTodo(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(todoService.deleteTodo(id), HttpStatus.OK);
+    @DeleteMapping("/user/todo/{todoId}")
+    public ResponseEntity<String> deleteTodo(@PathVariable("todoId") Long todoId) {
+        return new ResponseEntity<>(todoService.deleteTodo(todoId), HttpStatus.OK);
     }
 }

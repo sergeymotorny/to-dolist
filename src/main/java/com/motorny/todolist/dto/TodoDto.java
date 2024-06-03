@@ -1,26 +1,23 @@
 package com.motorny.todolist.dto;
 
 import com.motorny.todolist.model.Priority;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
+@Builder
 public class TodoDto {
 
     private Long id;
     private String name;
     private String comment;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Boolean important;
     private Priority priority;
-    private Set<TagDto> tagDtoSet;
+    private Set<TagDto> tags;
     private Long userId;
 }

@@ -7,13 +7,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
 @Table(name = "_user")
 public class User {
 
@@ -29,40 +28,29 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Todo> todoList = new HashSet<>();
+    private Set<Todo> todos = new HashSet<>();
 
     public void addTodo(Todo todo) {
-        addTodo(todo, false);
-    }
-
-    public void addTodo(Todo todo, boolean otherSideHasBenSet) {
-        getTodoList().add(todo);
-        if (otherSideHasBenSet) {
-            return;
-        }
-        todo.setUser(this, true);
+        this.todos.add(todo);
+        todo.setUser(this);
     }
 
     public void removeTodo(Todo todo) {
-        removeTodo(todo, false);
+        this.todos.remove(todo);
+        todo.removeUser(this);
     }
 
-    public void removeTodo(Todo todo, boolean otherSideHasBenSet) {
-        this.getTodoList().remove(todo);
-        if (otherSideHasBenSet) {
-            return;
-        }
-        todo.removeUser(this, true);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email)
+                && Objects.equals(password, user.password);
     }
 
-//    public void addTodo(Todo todo) {
-//        this.todoList.add(todo);
-//        todo.setUser(this, true);
-//    }
-//
-//    //when we call removeTodo on a user, the reference to the user in the todo.user task will be removed
-//    public void removeTodo(Todo todo, boolean otherSideHasBeenSet) {
-//        this.todoList.remove(todo);
-//        todo.setUser(null, true);
-//    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password);
+    }
 }

@@ -1,20 +1,17 @@
 package com.motorny.todolist.model;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
 @Table(name = "todo")
 public class Todo {
 
@@ -30,10 +27,10 @@ public class Todo {
     private String comment;
 
     @Column(name = "start_date", nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "important", nullable = false)
     private Boolean important;
@@ -47,89 +44,47 @@ public class Todo {
             name = "todo_tag",
             joinColumns = @JoinColumn(name = "todo_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<Tag> tagSet = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public void setUser(User user) {
-        setUser(user, false);
-    }
-
-    public void setUser(User user, boolean otherSideHasBenSet) {
         this.user = user;
-        if (otherSideHasBenSet) {
-            return;
-        }
-        user.addTodo(this, true);
+        user.addTodo(this);
     }
 
     public void removeUser(User user) {
-        removeUser(user, false);
-    }
-
-    public void removeUser(User user, boolean otherSideHasBenSet) {
         this.user = null;
-        if (otherSideHasBenSet) {
-            return;
-        }
-        user.removeTodo(this, true);
-    }
-
-
-    public Set<Tag> getSetList() {
-        return tagSet;
+        user.getTodos().remove(this);
     }
 
     public void addTag(Tag tag) {
-        addTag(tag, false);
-    }
-
-    public void addTag(Tag tag, boolean otherSideHasBenSet) {
-        this.getSetList().add(tag);
-        if (otherSideHasBenSet) {
-            return;
-        }
-        tag.addTodo(this, true);
+        this.tags.add(tag);
+        tag.addTodo(this);
     }
 
     public void removeTag(Tag tag) {
-        removeTag(tag, false);
+        this.tags.remove(tag);
+        tag.setTodos(null);
     }
 
-    public void removeTag(Tag tag, boolean otherSideHasBenSet) {
-        this.getSetList().remove(tag);
-        if (otherSideHasBenSet) {
-            return;
-        }
-        tag.removeTodo(this, true);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Todo todo = (Todo) o;
+        return Objects.equals(id, todo.id) && Objects.equals(name, todo.name)
+                && Objects.equals(comment, todo.comment)
+                && Objects.equals(startDate, todo.startDate)
+                && Objects.equals(endDate, todo.endDate)
+                && Objects.equals(important, todo.important)
+                && priority == todo.priority;
     }
 
-
-
-//    public void setUser(User user, boolean otherSideHasBeenSet) {
-//        this.user = user;
-//        if (!otherSideHasBeenSet && user != null) {
-//            user.addTodo(this);
-//        }
-//    }
-//
-//    // when removeUser is called on a task, the user reference todo.user will be reset
-//    public void removeUser(User user, boolean otherSideHasBeenSet) {
-//        this.user = null;
-//        user.removeTodo(this, true);
-//    }
-//
-//    public void addTag(Tag tag, boolean otherSideHasBeenSet) {
-//        this.tagList.add(tag);
-//        if (!otherSideHasBeenSet && tag != null) {
-//            tag.getTodoList().add(this);
-//        }
-//    }
-//
-//    public void removeTag(Tag tag) {
-//        this.tagList.remove(tag);
-//        tag.getTodoList().remove(this);
-//    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, comment, startDate, endDate, important, priority);
+    }
 }

@@ -8,7 +8,7 @@ import com.motorny.todolist.services.TagService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -18,16 +18,17 @@ public class TagServiceImpl implements TagService {
     private final TagMapper tagMapper;
 
     @Override
-    public TagDto findOrCreate(TagDto tagDto) {
+    public Tag findOrCreate(TagDto tagDto) {
+        Optional<Tag> existedTag = tagRepository.findOptionalByName(tagDto.getName());
 
-        List<TagDto> foundTags = tagRepository.findByName(tagDto.getName());
-
-        if (foundTags.isEmpty()) {
+        if (existedTag.isEmpty()) {
             Tag tag = tagMapper.toTag(tagDto);
             tagRepository.save(tag);
-            return tagDto;
+            return tag;
         } else {
-            return foundTags.getFirst();
+            return existedTag.get();
         }
     }
+
+    // разделить метод
 }

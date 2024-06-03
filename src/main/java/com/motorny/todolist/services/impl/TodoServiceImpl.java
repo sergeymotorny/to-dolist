@@ -3,6 +3,7 @@ package com.motorny.todolist.services.impl;
 import com.motorny.todolist.dto.TagDto;
 import com.motorny.todolist.dto.TodoDto;
 import com.motorny.todolist.exceptions.CustomEmptyDataException;
+import com.motorny.todolist.mappers.TagMapper;
 import com.motorny.todolist.mappers.TodoMapper;
 import com.motorny.todolist.model.Todo;
 import com.motorny.todolist.model.User;
@@ -12,11 +13,9 @@ import com.motorny.todolist.services.TagService;
 import com.motorny.todolist.services.TodoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,20 +23,23 @@ import java.util.stream.Collectors;
 public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
     private final TodoMapper todoMapper;
     private final TagService tagService;
+    private final TagMapper tagMapper;
 
     @Override
-    public List<TodoDto> getAllTodo() {
-        List<Todo> todoList = todoRepository.findAll();
+    public List<TodoDto> getAllTodo(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
 
-        if (!todoList.isEmpty()) {
-            return todoList.stream()
+        if (user.isPresent()) {
+            return todoRepository.findAllByUser(user.get()).stream()
                     .map(todoMapper::toTodoDto)
                     .collect(Collectors.toList());
         } else {
-            throw new CustomEmptyDataException("No todos found");
+            throw new CustomEmptyDataException("User with id: " + userId + " not found");
         }
+
     }
 
     @Override
@@ -48,34 +50,34 @@ public class TodoServiceImpl implements TodoService {
         return todoMapper.toTodoDto(byId);
     }
 
+    @Transactional
     @Override
-    public TodoDto createTodo(TodoDto todoDto) {
+    public TodoDto createTodo(TodoDto todoDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomEmptyDataException("Unable to get user for todo"));
+
         Todo todo = todoMapper.toTodo(todoDto);
+        todo.setUser(user); //!
 
-        if (todo != null) {
-            Set<TagDto> tags = new HashSet<>(todoDto.getTagDtoSet());
+        todoDto.getTags().stream()
+                .map(tagService::findOrCreate)
+                .collect(Collectors.toSet())
+                .forEach(tag -> todo.addTag(tag));
 
-            todoDto.getTagDtoSet().clear();
+        Todo saveTodo = todoRepository.save(todo);
 
-            todo.setUser(todo.getUser());
-
-            Todo saveTodo = todoRepository.save(todo);
-
-            tags.stream()
-                    .map(tagService::findOrCreate)
-                    .collect(Collectors.toSet())
-                    .forEach(todo.addTag());
-
-
-        }
+        //tagsDto.stream()
+        //.map(tagService::findOrCreate)
+        //.map(tagMapper::toTag)
+        //.forEach(saveTodo::addTag);
 
         return todoMapper.toTodoDto(saveTodo);
     }
 
     @Override
-    public TodoDto updateTodo(TodoDto todoDto, Long id) {
-        Todo existingTodo = todoRepository.findById(id)
-                .orElseThrow(() -> new CustomEmptyDataException("Todo not found with id " + id));
+    public TodoDto updateTodo(TodoDto todoDto, Long todoId) {
+        Todo existingTodo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new CustomEmptyDataException("Todo not found with id " + todoId));
 
         existingTodo.setName(todoDto.getName());
         existingTodo.setComment(todoDto.getComment());
@@ -91,13 +93,13 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public String deleteTodo(Long id) {
-        Todo existingTodo = todoRepository.findById(id)
+        Todo todoForDelete = todoRepository.findById(id)
                 .orElseThrow(() -> new CustomEmptyDataException("Todo not found with id " + id));
 
-        existingTodo.getSetList()
-                .forEach(tag -> tag.removeTodo(existingTodo));
+        todoForDelete.getTags()
+                 .forEach(tag -> tag.removeTodo(todoForDelete));
 
-        todoRepository.delete(existingTodo);
+        todoRepository.delete(todoForDelete);
 
         return "Todo with id " + id + " successfully deleted";
     }
