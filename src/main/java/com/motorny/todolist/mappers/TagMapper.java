@@ -17,7 +17,6 @@ public interface TagMapper {
     @Mapping(target = "todos", expression = "java(mapIds(tag.getTodos()))")
     TagDto toTagDto(Tag tag);
 
-    //@Mapping(target = "todos", expression = "java(null)")
     @Mapping(target = "todos", ignore = true)
     Tag toTag(TagDto tagDto);
 
@@ -26,6 +25,4 @@ public interface TagMapper {
                 .map(Todo::getId)
                 .collect(Collectors.toSet());
     }
-
-    // разобраться с методом mapTodos
 }

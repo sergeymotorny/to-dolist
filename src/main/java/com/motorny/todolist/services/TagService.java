@@ -6,4 +6,5 @@ import com.motorny.todolist.model.Tag;
 
 public interface TagService {
     Tag findOrCreate(TagDto tagDto);
+    String deleteTag(Long id);
 }
