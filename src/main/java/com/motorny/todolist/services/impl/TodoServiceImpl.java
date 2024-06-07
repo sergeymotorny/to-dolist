@@ -1,9 +1,7 @@
 package com.motorny.todolist.services.impl;
 
-import com.motorny.todolist.dto.TagDto;
 import com.motorny.todolist.dto.TodoDto;
 import com.motorny.todolist.exceptions.CustomEmptyDataException;
-import com.motorny.todolist.mappers.TagMapper;
 import com.motorny.todolist.mappers.TodoMapper;
 import com.motorny.todolist.model.Todo;
 import com.motorny.todolist.model.User;
@@ -15,7 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +25,6 @@ public class TodoServiceImpl implements TodoService {
     private final UserRepository userRepository;
     private final TodoMapper todoMapper;
     private final TagService tagService;
-    private final TagMapper tagMapper;
 
     @Override
     public List<TodoDto> getAllTodo(Long userId) {
@@ -39,7 +37,6 @@ public class TodoServiceImpl implements TodoService {
         } else {
             throw new CustomEmptyDataException("User with id: " + userId + " not found");
         }
-
     }
 
     @Override
@@ -56,22 +53,21 @@ public class TodoServiceImpl implements TodoService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomEmptyDataException("Unable to get user for todo"));
 
-        Todo todo = todoMapper.toTodo(todoDto);
-        todo.setUser(user); //!
+        Todo todo = todoMapper.toTodoWithUser(todoDto, user);
 
         todoDto.getTags().stream()
                 .map(tagService::findOrCreate)
                 .collect(Collectors.toSet())
-                .forEach(tag -> todo.addTag(tag));
+                .forEach(todo::addTag);
 
-        Todo saveTodo = todoRepository.save(todo);
+        Todo savedTodo = todoRepository.save(todo);
 
         //tagsDto.stream()
-        //.map(tagService::findOrCreate)
-        //.map(tagMapper::toTag)
-        //.forEach(saveTodo::addTag);
+        //      .map(tagService::findOrCreate)
+        //      .map(tagMapper::toTag)
+        //      .forEach(saveTodo::addTag);
 
-        return todoMapper.toTodoDto(saveTodo);
+        return todoMapper.toTodoDto(savedTodo);
     }
 
     @Override
@@ -91,16 +87,16 @@ public class TodoServiceImpl implements TodoService {
         return todoMapper.toTodoDto(existingTodo);
     }
 
+    //@Transactional
     @Override
     public String deleteTodo(Long id) {
         Todo todoForDelete = todoRepository.findById(id)
                 .orElseThrow(() -> new CustomEmptyDataException("Todo not found with id " + id));
 
-        todoForDelete.getTags()
-                 .forEach(tag -> tag.removeTodo(todoForDelete));
+        todoForDelete.removeTags();
 
         todoRepository.delete(todoForDelete);
 
-        return "Todo with id " + id + " successfully deleted";
+        return "Todo with id " + id + " was successfully deleted";
     }
 }
