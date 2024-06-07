@@ -42,7 +42,7 @@ Once the application is running, you can start managing your tasks through the u
 - Click the "Add Task" button.
 - Enter the task details including name, description, due date, and priority.
 - Click "Save" to add the task to your list.
-   
+
 2. **Editing a Task:**
 - Click on the task you want to edit.
 - Modify the task details as needed.
@@ -53,7 +53,7 @@ Once the application is running, you can start managing your tasks through the u
 - Click the "Delete" button.
 
 4. **Marking a Task as Completed:**
-Click on the checkbox next to the task to mark it as completed.
+   Click on the checkbox next to the task to mark it as completed.
 
 
 ## Contributing
