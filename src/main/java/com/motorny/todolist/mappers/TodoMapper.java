@@ -16,7 +16,7 @@ public interface TodoMapper {
     @Mapping(source = "user.id", target = "userId")
     TodoDto toTodoDto(Todo todo);
 
-    @Mapping(source = "userId", target = "user.id")
+    @Mapping(target = "user.id", source = "userId")
     @Mapping(target = "tags", expression = "java(new HashSet())")
     @Mapping(target = "user", ignore = true)
     Todo toTodo(TodoDto todoDto);

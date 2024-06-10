@@ -28,12 +28,11 @@ public class Tag {
 
     public void addTodo(Todo todo) {
         this.todos.add(todo);
-        todo.addTag(this);
     }
 
     public void removeTodo(Todo todo) {
         this.todos.remove(todo);
-        todo.setTags(null);
+        todo.getTags().remove(this);
     }
 
     @Override

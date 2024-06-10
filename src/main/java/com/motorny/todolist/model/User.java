@@ -27,7 +27,10 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
     private Set<Todo> todos = new HashSet<>();
 
     public void addTodo(Todo todo) {

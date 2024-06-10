@@ -2,6 +2,7 @@ package com.motorny.todolist.controllers;
 
 import com.motorny.todolist.dto.TodoDto;
 import com.motorny.todolist.services.TodoService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +23,20 @@ public class TodoController {
     }
 
     @GetMapping("/user/todo/{todoId}")
-    public ResponseEntity<TodoDto> getTodo(@PathVariable("todoId") Long todoId) {
-        return new ResponseEntity<>(todoService.getTodo(todoId), HttpStatus.OK);
+    @ResponseStatus(value = HttpStatus.OK)
+    public TodoDto getTodo(@PathVariable("todoId") Long todoId) {
+        return todoService.getTodo(todoId);
     }
 
     @PostMapping("/user/{userId}/todo")
-    public ResponseEntity<TodoDto> createTodo(@RequestBody TodoDto todoDto, @PathVariable("userId") Long userId) {
+    public ResponseEntity<TodoDto> createTodo(@Valid @RequestBody TodoDto todoDto,
+                                              @PathVariable("userId") Long userId) {
         return new ResponseEntity<>(todoService.createTodo(todoDto, userId), HttpStatus.CREATED);
     }
 
     @PutMapping("/user/todo/{todoId}")
-    public ResponseEntity<TodoDto> updateTodo(@RequestBody TodoDto todoDto, @PathVariable("todoId") Long todoId) {
+    public ResponseEntity<TodoDto> updateTodo(@Valid @RequestBody TodoDto todoDto,
+                                              @PathVariable("todoId") Long todoId) {
         return new ResponseEntity<>(todoService.updateTodo(todoDto, todoId), HttpStatus.OK);
     }
 
