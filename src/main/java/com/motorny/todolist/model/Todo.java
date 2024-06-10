@@ -39,7 +39,7 @@ public class Todo {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "todo_tag",
             joinColumns = @JoinColumn(name = "todo_id"),
@@ -62,12 +62,18 @@ public class Todo {
 
     public void addTag(Tag tag) {
         this.tags.add(tag);
-        tag.addTodo(this);
+        tag.getTodos().add(this);
     }
 
     public void removeTag(Tag tag) {
         this.tags.remove(tag);
-        tag.setTodos(null);
+        tag.getTodos().remove(this);
+    }
+
+    public void removeTags() {
+        Set<Tag> tagsCopy = new HashSet<>(tags);
+
+        tagsCopy.forEach(this::removeTag);
     }
 
     @Override

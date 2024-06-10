@@ -2,6 +2,7 @@ package com.motorny.todolist.controllers;
 
 import com.motorny.todolist.dto.UserDto;
 import com.motorny.todolist.services.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +23,19 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+    @ResponseStatus(value = HttpStatus.OK)
+    public UserDto getUser(@PathVariable("id") Long id) {
+        return userService.getUser(id);
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable("id") Long id) {
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
+                                              @PathVariable("id") Long id) {
         return new ResponseEntity<>(userService.updateUser(userDto, id), HttpStatus.OK);
     }
 

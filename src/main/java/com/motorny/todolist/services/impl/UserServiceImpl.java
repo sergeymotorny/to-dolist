@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -70,6 +69,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(existingUser);
 
-        return "User with id: " + id + " successfully deleted";
+        return "User with id: " + id + " was successfully deleted";
     }
 }
