@@ -13,7 +13,6 @@ Welcome to the to-doList project! This application allows users to create, manag
 - **Task Prioritization**: Assign priorities to tasks to focus on what matters most.
 - **Due Dates**: Set due dates for tasks to ensure timely completion.
 - **Task Categories**: Organize tasks into categories for better management.
-- **Mark as Completed**: Mark tasks as completed to keep track of progress.
 - **Search Functionality**: Quickly find tasks using the search feature.
 
 ## Installation
@@ -51,10 +50,6 @@ Once the application is running, you can start managing your tasks through the u
 3. **Deleting a Task:**
 - Click on the task you want to delete.
 - Click the "Delete" button.
-
-4. **Marking a Task as Completed:**
-   Click on the checkbox next to the task to mark it as completed.
-
 
 ## Contributing
 We welcome contributions to improve the to-doList application. To contribute:
