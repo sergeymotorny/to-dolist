@@ -19,7 +19,7 @@ public class TodoDto {
     @NotBlank(message = "Todo name cannot be blank")
     private String name;
 
-    @Pattern(regexp = "[A-Za-z0-9]/.*!.*/")
+    @Pattern(regexp = "[A-Za-z0-9!?@#$%^&*()\\s]+")
     private String comment;
 
     @FutureOrPresent(message = "Start date must be today or in the future")
@@ -32,7 +32,6 @@ public class TodoDto {
     private Boolean important;
 
     @NotNull(message = "Todo priority is required")
-    @Pattern(regexp = "LOW|MEDIUM|HIGH", message = "Priority should be LOW, MEDIUM or HIGH" )
     private Priority priority;
 
     @UniqueElements(message = "Tags should be unique")

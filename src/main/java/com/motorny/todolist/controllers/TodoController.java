@@ -5,7 +5,6 @@ import com.motorny.todolist.services.TodoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,25 +22,25 @@ public class TodoController {
     }
 
     @GetMapping("/user/todo/{todoId}")
-    @ResponseStatus(value = HttpStatus.OK)
     public TodoDto getTodo(@PathVariable("todoId") Long todoId) {
         return todoService.getTodo(todoId);
     }
 
     @PostMapping("/user/{userId}/todo")
-    public ResponseEntity<TodoDto> createTodo(@Valid @RequestBody TodoDto todoDto,
-                                              @PathVariable("userId") Long userId) {
-        return new ResponseEntity<>(todoService.createTodo(todoDto, userId), HttpStatus.CREATED);
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public TodoDto createTodo(@Valid @RequestBody TodoDto todoDto,
+                              @PathVariable("userId") Long userId) {
+        return todoService.createTodo(todoDto, userId);
     }
 
     @PutMapping("/user/todo/{todoId}")
-    public ResponseEntity<TodoDto> updateTodo(@Valid @RequestBody TodoDto todoDto,
-                                              @PathVariable("todoId") Long todoId) {
-        return new ResponseEntity<>(todoService.updateTodo(todoDto, todoId), HttpStatus.OK);
+    public TodoDto updateTodo(@Valid @RequestBody TodoDto todoDto,
+                              @PathVariable("todoId") Long todoId) {
+        return todoService.updateTodo(todoDto, todoId);
     }
 
     @DeleteMapping("/user/todo/{todoId}")
-    public ResponseEntity<String> deleteTodo(@PathVariable("todoId") Long todoId) {
-        return new ResponseEntity<>(todoService.deleteTodo(todoId), HttpStatus.OK);
+    public String deleteTodo(@PathVariable("todoId") Long todoId) {
+        return todoService.deleteTodo(todoId);
     }
 }
