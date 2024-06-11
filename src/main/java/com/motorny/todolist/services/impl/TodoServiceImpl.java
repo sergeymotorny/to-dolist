@@ -62,14 +62,10 @@ public class TodoServiceImpl implements TodoService {
 
         Todo savedTodo = todoRepository.save(todo);
 
-        //tagsDto.stream()
-        //      .map(tagService::findOrCreate)
-        //      .map(tagMapper::toTag)
-        //      .forEach(saveTodo::addTag);
-
         return todoMapper.toTodoDto(savedTodo);
     }
 
+    @Transactional
     @Override
     public TodoDto updateTodo(TodoDto todoDto, Long todoId) {
         Todo existingTodo = todoRepository.findById(todoId)
@@ -87,7 +83,7 @@ public class TodoServiceImpl implements TodoService {
         return todoMapper.toTodoDto(existingTodo);
     }
 
-    //@Transactional
+    @Transactional
     @Override
     public String deleteTodo(Long id) {
         Todo todoForDelete = todoRepository.findById(id)

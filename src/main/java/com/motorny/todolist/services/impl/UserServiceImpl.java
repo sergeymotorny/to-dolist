@@ -8,6 +8,7 @@ import com.motorny.todolist.repositories.UserRepository;
 import com.motorny.todolist.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(byId);
     }
 
+    @Transactional
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(saveUser);
     }
 
+    @Transactional
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
         User existingUser = userRepository.findById(id)
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(existingUser);
     }
 
+    @Transactional
     @Override
     public String deleteUser(Long id) {
         User existingUser = userRepository.findById(id)

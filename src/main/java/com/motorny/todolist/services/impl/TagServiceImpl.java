@@ -8,6 +8,7 @@ import com.motorny.todolist.repositories.TagRepository;
 import com.motorny.todolist.services.TagService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class TagServiceImpl implements TagService {
         return existedTag.orElseGet(() -> craeteTag(tagDto));
     }
 
+    @Transactional
     @Override
     public String deleteTag(Long id) {
         Tag tagForDelete = tagRepository.findById(id)
